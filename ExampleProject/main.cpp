@@ -36,13 +36,23 @@ int main(int argc, char* argv[])
 
 	int i = 1;
 	std::string user_agent;
-	pcpp::EthLayer* ethernetLayer;
-	pcpp::HttpRequestLayer* httpRequestLayer;
-	pcpp::Layer* curLayer;
+	pcpp::Packet parsedPacket(&rawPacket);
+	pcpp::EthLayer* ethernetLayer = parsedPacket.getLayerOfType<pcpp::EthLayer>();
+	pcpp::HttpRequestLayer* httpRequestLayer = parsedPacket.getLayerOfType<pcpp::HttpRequestLayer>();
+	pcpp::Layer* curLayer = parsedPacket.getFirstLayer();
+
+
+	std::cout << std::endl
+		<< "#         : " << i << std::endl
+		<< "source ip :" << parsedPacket.getLayerOfType<pcpp::IPv4Layer>()->getSrcIpAddress().toString().c_str() << std::endl
+		<< "dest ip   :" << parsedPacket.getLayerOfType<pcpp::IPv4Layer>()->getDstIpAddress().toString().c_str() << std::endl
+		<< "mac_source:" << ethernetLayer->getSourceMac().toString().c_str() << std::endl
+		<< "mac_destin:" << ethernetLayer->getDestMac().toString().c_str() << std::endl;
+		
 
 	while (reader.getNextPacket(rawPacket))
 	{
-
+		i++;
 		// parse the raw packet into a parsed packet
 		pcpp::Packet parsedPacket(&rawPacket);
 		ethernetLayer = parsedPacket.getLayerOfType<pcpp::EthLayer>();
@@ -55,7 +65,7 @@ int main(int argc, char* argv[])
 		{
 
 			std::cout << std::endl
-				<< "#       : " << i << std::endl
+				<< "#         : " << i << std::endl
 				<< "source ip :" << parsedPacket.getLayerOfType<pcpp::IPv4Layer>()->getSrcIpAddress().toString().c_str() << std::endl
 				<< "dest ip   :" << parsedPacket.getLayerOfType<pcpp::IPv4Layer>()->getDstIpAddress().toString().c_str() << std::endl
 				<< "mac_source:" << ethernetLayer->getSourceMac().toString().c_str() << std::endl
@@ -74,9 +84,7 @@ int main(int argc, char* argv[])
 				//delete httpRequestLayer;
 			}
 
-		}
-
-		i++;
+		}		
 	}
 
 	// close the file
