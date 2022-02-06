@@ -83,7 +83,6 @@ int main(int argc, char* argv[])
 				std::cerr << "http user-agent: " << user_agent << std::endl;
 				//delete httpRequestLayer;
 			}
-
 		}		
 	}
 
